@@ -1,0 +1,40 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>2.&nbsp;Installation</title><link rel="stylesheet" href="html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.60.1"><link rel="home" href="index.html" title="MetaCat User's Manual"><link rel="up" href="index.html" title="MetaCat User's Manual"><link rel="previous" href="ar01s01.html" title="1.&nbsp;Introduction"><link rel="next" href="ar01s03.html" title="3.&nbsp;Managing Categories"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2.&nbsp;Installation</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ar01s01.html">Prev</a>&nbsp;</td><th width="60%" align="center">&nbsp;</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ar01s03.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="d0e19"></a>2.&nbsp;Installation</h2></div></div><div></div></div><p>Installing MetaCat comes in one not-so-easy and three easy steps:</p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e24"></a>2.1.&nbsp;Upload</h3></div></div><div></div></div><p>Upload the <tt class="filename">/metacat</tt> directory from the distribution into your Xoops 2.0 <tt class="filename">/modules</tt> directory.</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e35"></a>2.2.&nbsp;Module Configuration</h3></div></div><div></div></div><p>Before you can install MetaCat, you need to tell it which modules' categories it should manage and how these modules handle categories internally. This is done by editing the <tt class="filename">/modules/metacat/class/modules.dat.php</tt> file in a text editor. Here's a sample from that file, showing the module data for the "mydownloads" module:</p><pre class="programlisting">$modules['mydownloads'] = array( 
+    // name of the module-directory
+    'name' =&gt; 'mydownloads', 
+    // name of the GET variable to select a category
+    'cat_get_var' =&gt; 'cid', 
+    // url (relative to site root) to display a category
+    'cat_view_url' =&gt; '/modules/mydownloads/viewcat.php?cid=%s', 
+    // descriptive name of the type of items the module has
+    'item_type' =&gt; 'Downloads', 
+    // database table where the module stores its category information
+    'cat_table' =&gt; 'mydownloads_cat', 
+    // column in cat_table that holds the category title
+    'title_field' =&gt; 'title', 
+    // column in cat_table that holds the category ID
+    'cat_id_field' =&gt; 'cid', 
+    // column in cat_table that holds the parent's ID
+    // (leave empty if module has no sub-categories.)
+    'parent_id_field' =&gt; 'pid', 
+    // column in cat_table that holds the information about the category image/icon
+    // (leave empty if module has no category images.)
+    'image_reference_field' =&gt; 'imgurl', 
+    // type of the image information used.
+    // "URL" - image can be anywhere, fully qualified URL given
+    // "PATH" - image is in module-specific directory "image_upload_path". Give filename only.
+    'image_reference_type' =&gt; 'URL', 
+    // if "image_reference_type" is "PATH", this is the absolute path to copy images to
+    'image_upload_path' =&gt; '', 
+    // table in the database that holds content for this module
+    'content_table' =&gt; 'mydownloads_downloads', 
+    // column in content_table that holds the category ID
+    'content_cat_field' =&gt; 'cid', 
+    // column in content_table that holds the content ID
+    'content_id_field' =&gt; 'lid', 
+    // name of the GET var to select one content item.
+    'content_get_var' =&gt; 'lid', 
+);</pre><p>This is a lot of information, but it is all needed for MetaCat to function correctly. Data for the Xoops 2.0 default modules is already provided. you only need to edit this if you've changed e.g. the directory a module is installed in.</p><p>If you don't have one of these modules installed or don't want MetaCat to manage its categories, simply comment out that modules definition by enclosing it in comment delimiters like this:</p><pre class="programlisting">/*
+...
+*/</pre><p>The modules.dat.php file makes it quite easy to add support for addon Xoops 2.0 modules. Simply copy the block of an existing module and change it to match your module's specifications. You may have to do some research in the module's database table definitions to do that, or try to get help from the module's author. Hopefully module authors will start to include MetaCat definition data in their distributions.</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e53"></a>2.3.&nbsp;Installation</h3></div></div><div></div></div><p>Now you are ready to install MetaCat using the Xoops 2.0 Module Manager Console, just like you would any other module.</p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e58"></a>2.4.&nbsp;Initialization</h3></div></div><div></div></div><p>To start managing your categories with MetaCat, you will first want to import your current categories from the modules into MetaCat. To do this, select "<span class="guimenuitem">Initialize Categories</span>" from the MetaCat popup menu and click "<span class="guibutton">Submit</span>" in reply to the security prompt.</p><p>MetaCat will first erase its own category database, then scan through all installed modules and import the categories. Top-level categories with identical names in different modules will be treated as one category that is active in all those modules. Sub-categories will only be treated as one module if they have the same name and are children of parents that are treated as one category.</p><p>It is not possible to import category images from the modules. The categories will keep their current images until you change it from MetaCat. Until you do that, the category will be shown as "no image" in MetaCat, even though there may be images active in individual modules. (Take this to mean "no centrally managed image".)</p><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>Due to the process used in initialization, all categories already in MetaCat, but not activated in any module will be deleted.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ar01s01.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="index.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ar01s03.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">1.&nbsp;Introduction&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;3.&nbsp;Managing Categories</td></tr></table></div></body></html>
